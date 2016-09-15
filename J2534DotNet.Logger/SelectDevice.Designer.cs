@@ -35,9 +35,10 @@
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(197, 36);
+            this.btnOK.Location = new System.Drawing.Point(263, 44);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.Size = new System.Drawing.Size(100, 28);
             this.btnOK.TabIndex = 0;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -47,20 +48,22 @@
             // 
             this.deviceList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.deviceList.FormattingEnabled = true;
-            this.deviceList.Location = new System.Drawing.Point(5, 9);
+            this.deviceList.Location = new System.Drawing.Point(7, 11);
+            this.deviceList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.deviceList.Name = "deviceList";
-            this.deviceList.Size = new System.Drawing.Size(267, 21);
+            this.deviceList.Size = new System.Drawing.Size(355, 24);
             this.deviceList.TabIndex = 1;
             // 
             // SelectDevice
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(277, 65);
+            this.ClientSize = new System.Drawing.Size(416, 109);
             this.ControlBox = false;
             this.Controls.Add(this.deviceList);
             this.Controls.Add(this.btnOK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "SelectDevice";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select device";

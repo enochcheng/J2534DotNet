@@ -1,15 +1,15 @@
 ﻿#region Copyright (c) 2010, Michael Kelly
-/* 
+/*
  * Copyright (c) 2010, Michael Kelly
  * michael.e.kelly@gmail.com
  * http://michael-kelly.com/
- * 
+ *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
  * Neither the name of the organization nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -21,12 +21,14 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 #endregion License
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using J2534DotNet;
 
@@ -46,7 +48,7 @@ namespace Sample
         /*
          *  Example 1:
          *      Detect J2534 devices
-         * 
+         *
          */
         private void CmdDetectDevicesClick(object sender, EventArgs e)
         {
@@ -78,10 +80,10 @@ namespace Sample
         }
 
         /*
-         * 
+         *
          *  Example 2:
          *      Use the J2534 protocol to send and receive a message (w/o error checking)
-         * 
+         *
          */
         private void SendReceiveNoErrorChecking(object sender, EventArgs e)
         {
@@ -144,7 +146,7 @@ namespace Sample
             var txMsgPtr = txMsg.ToIntPtr();
             int numMsgs = 1;
             passThru.PassThruWriteMsgs(channelId, txMsgPtr, ref numMsgs, 50);
-            
+
             // Read messages in a loop until we either timeout or we receive data
             numMsgs = 1;
             IntPtr rxMsgs = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(PassThruMsg)) * numMsgs);
@@ -174,9 +176,9 @@ namespace Sample
         }
 
         /*
-         * 
+         *
          *  Use the J2534 protocol to read voltage
-         * 
+         *
          */
         private void CmdReadVoltageClick(object sender, EventArgs e)
         {
@@ -251,6 +253,59 @@ namespace Sample
         private void button1_Click(object sender, EventArgs e)
         {
             MessageBox.Show(Assembly.GetExecutingAssembly().Location);
+            SendReceiveNoErrorChecking(sender ,e);
+        }
+
+        /*
+         *  Test Send / Receive GMLan messages
+         */
+        private void textGMLan(object sender, EventArgs e)
+        {
+            J2534Extended passThru = new J2534Extended();
+            GMLanComm comm = new GMLanComm(passThru);
+            comm.Connect();
+
+            // Test send SW GMLan message
+            comm.SendSwMessage("0x621", false, false, "000000");
+
+            // Test recieve GMLan message
+            while (comm.IsConnected())
+            {
+                List<PassThruMsg> swMsgs = comm.ReadSwMessage();
+                List<PassThruMsg> dwMsgs = comm.ReadDwMessage();
+
+                foreach (PassThruMsg msg in swMsgs)
+                {
+                    byte[] bytes = msg.GetBytes();
+                    String frameID = GMLanComm.GetIDFromBytes(bytes, msg.DataSize);
+                    String data = GMLanComm.GetDataFromBytes(bytes, msg.DataSize);
+                    Debug.WriteLine("SW CAN ID: " + frameID);
+                    this.textBox1.AppendText("\r\nSW CAN ID: " + frameID);
+                }
+                foreach (PassThruMsg msg in dwMsgs)
+                {
+                    byte[] bytes = msg.GetBytes();
+                    String frameID = GMLanComm.GetIDFromBytes(bytes, msg.DataSize);
+                    String data = GMLanComm.GetDataFromBytes(bytes, msg.DataSize);
+                    Debug.WriteLine("DW CAN ID: " + frameID);
+                    this.textBox1.AppendText("\r\nDW CAN ID: " + frameID);
+                }
+            }
+
+            comm.Disconnect();
+
+            // When we are done with the device, we can free the library.
+            passThru.FreeLibrary();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            textGMLan(sender, e);
         }
     }
 }

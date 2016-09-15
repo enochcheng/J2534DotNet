@@ -44,6 +44,7 @@ namespace J2534DotNet
         STMIN_TX = 0x23,
         T3_MAX = 0x24,
         ISO15765_WFT_MAX = 0x25,
+        J1962_PINS = 0x8001
 
     }
 }

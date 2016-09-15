@@ -61,7 +61,9 @@ namespace J2534DotNet
         WAIT_P3_MIN_ONLY = 0x00000200,
         CAN_29BIT_ID = 0x00000100,
         ISO15765_ADDR_TYPE = 0x00000080,
-        ISO15765_FRAME_PAD = 0x00000040
+        ISO15765_FRAME_PAD = 0x00000040,
+        SW_CAN_HV_TX = 0x00000400, /*-2*/
+        DT_PERIODIC_UPDATE = 0x10000000	/*DT*/
     }
 
     public enum ProtocolID
@@ -75,7 +77,9 @@ namespace J2534DotNet
         SCI_A_ENGINE = 0x07,
         SCI_A_TRANS = 0x08,
         SCI_B_ENGINE = 0x09,
-        SCI_B_TRANS = 0x0A
+        SCI_B_TRANS = 0x0A,
+        SW_CAN = 0x8008,
+        DW_CAN = 0x8004
     }
 
     public enum BaudRate
@@ -97,6 +101,7 @@ namespace J2534DotNet
         J1850VPW_41600 = 41600,
 
         CAN = 500000,
+        CAN_33300 = 33300,
         CAN_125000 = 125000,
         CAN_250000 = 250000,
         CAN_500000 = 500000,

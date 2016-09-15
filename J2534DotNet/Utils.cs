@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace J2534DotNet
@@ -15,6 +16,34 @@ namespace J2534DotNet
         {
             IntPtr msgPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(PassThruMsg)));
             Marshal.StructureToPtr(msg, msgPtr, true);
+            return msgPtr;
+        }
+
+        public static IntPtr ToIntPtr(this SConfig sConfig)
+        {
+            IntPtr msgPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(SConfig)));
+            Marshal.StructureToPtr(sConfig, msgPtr, true);
+            return msgPtr;
+        }
+
+        public static IntPtr ToIntPtr(this List<SConfig> sConfigs)
+        {
+            int structSize = Marshal.SizeOf(typeof(SConfig));
+            int size = sConfigs.Count * structSize;
+            IntPtr msgPtr = Marshal.AllocHGlobal(size);
+            for (int i = 0; i < sConfigs.Count; i++)
+            {
+                SConfig sConfig = sConfigs.ElementAt(i);
+                Marshal.StructureToPtr(sConfig, (IntPtr) ((int)msgPtr + i * size), true);
+            }
+
+            return msgPtr;
+        }
+
+        public static IntPtr ToIntPtr(this SConfigList sConfigList)
+        {
+            IntPtr msgPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(SConfigList)));
+            Marshal.StructureToPtr(sConfigList, msgPtr, true);
             return msgPtr;
         }
 
